@@ -2,7 +2,7 @@
 
 DiscordJS documentation: https://discordjs.guide/#before-you-begin
 
-config.json (not pushed on the repo) contains an array of two guildIds: [MyPersonalTestingServerId, BotlyFriendServerId].
+config.json (not pushed on the repo) contains an array of two guildIds: [MyPersonalTestingServerId, OnlyFriendsServerId].
 
 ---
 
