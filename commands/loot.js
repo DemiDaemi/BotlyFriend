@@ -1,4 +1,8 @@
 const { SlashCommandBuilder } = require("discord.js");
+const client = require("../bot");
+
+const initDate = new Date("2022-12-27");
+const weekCount = require("../helpers/weeks");
 
 const admin = require("../helpers/firebase");
 
