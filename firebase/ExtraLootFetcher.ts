@@ -7,6 +7,6 @@ export class ExtraLootFetcher extends FirebaseFetcher {
     }
 
     async getAllExtraLoot(): Promise<IExtraLoot | null> {
-        return super.getCollection("ExtraLoot") as any;
+        return await super.getCollection("ExtraLoot") as any;
     }
 }
