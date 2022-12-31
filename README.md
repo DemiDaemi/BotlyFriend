@@ -6,8 +6,6 @@ config.json (not pushed on the repo) contains an array of two guildIds: [MyPerso
 
 ---
 
-
-
 ### 1. To install the node dependencies, run:
 
 `npm install`
@@ -18,4 +16,4 @@ config.json (not pushed on the repo) contains an array of two guildIds: [MyPerso
 
 ### 3. To start the bot locally, run:
 
-`node .`
+`npm start`

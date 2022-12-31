@@ -1,4 +1,4 @@
-const admin = require("firebase-admin");
+import * as fbadmin from "firebase-admin";
 
 const {
   firebaseEmail,
@@ -6,8 +6,8 @@ const {
   firebaseProjectId,
 } = require("../config.json");
 
-admin.initializeApp({
-  credential: admin.credential.cert({
+fbadmin.initializeApp({
+  credential: fbadmin.credential.cert({
     projectId: firebaseProjectId,
     clientEmail: firebaseEmail,
     privateKey: firebasePrivate,
@@ -15,4 +15,4 @@ admin.initializeApp({
   databaseURL: `https://${firebaseProjectId}.firebaseio.com`,
 });
 
-module.exports = admin;
+export const admin = fbadmin;

@@ -1,13 +1,10 @@
-const {
+import {
   SlashCommandBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  Events,
-  MessageComponentInteraction,
-  Message,
-} = require("discord.js");
-const admin = require("../helpers/firebase");
+} from "discord.js";
+const admin = require("../firebase/Firebase");
 
 const initDate = new Date("2022-12-27");
 const weekCount = require("../helpers/weeks");
@@ -17,10 +14,10 @@ let pages = [currentWeek];
 
 async function listWeeks() {
   const snapshot = await admin.firestore().collection("ExtraLoot").get();
-  snapshot.forEach((doc, index) => {
-    players = doc.data();
+  snapshot.forEach((doc: any, index: any) => {
+    let players = doc.data();
 
-    const loot = [];
+    const loot = [] as any;
 
     index = 0;
     Object.entries(players).forEach(([player, items]) => {
@@ -36,17 +33,15 @@ async function listWeeks() {
       loot: loot,
     });
   });
-
-  console.log(pages);
 }
 
-function lootDisplayWeek(week) {
+function lootDisplayWeek(week: any) {
   let title = `***${pages[week].weekNumber}***\n\n`;
 
   let items = "";
-  pages[week].loot.forEach((loot) => {
+  pages[week].loot.forEach((loot: any) => {
     let sb = `**${loot.player}: **`;
-    loot.items.forEach((item, i) => {
+    loot.items.forEach((item: any, i: any) => {
       sb += `${item}`;
       if (i < loot.items.length - 1) sb += ", ";
     });
@@ -55,6 +50,25 @@ function lootDisplayWeek(week) {
   });
 
   return title + items;
+}
+
+async function currentWeekLoot() {
+  await listWeeks();
+
+  let items = "";
+  let loot = pages[currentWeek].loot;
+
+  loot.forEach((loot: any) => {
+    let sb = `**${loot.player}: **`;
+    loot.items.forEach((item: any, i: any) => {
+      sb += `${item}`;
+      if (i < loot.items.length - 1) sb += ", ";
+    });
+
+    items += `${sb} \n`;
+  });
+
+  return items;
 }
 
 let weekIndex = currentWeek;
@@ -79,7 +93,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("loot")
     .setDescription("Displays who received extra loot for the past weeks"),
-  async execute(interaction) {
+  async execute(interaction: any) {
     await listWeeks();
 
     await interaction.reply({
@@ -91,7 +105,7 @@ module.exports = {
       time: 180000,
     });
 
-    collector.on("collect", async (i) => {
+    collector.on("collect", async (i: any) => {
       if (i.customId === "previousWeek" && weekIndex > 0) {
         weekIndex--;
       }
@@ -106,3 +120,4 @@ module.exports = {
     });
   },
 };
+// currentWeekLoot;
