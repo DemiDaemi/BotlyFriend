@@ -8,6 +8,6 @@ export class FirebaseFetcher {
 
     async getCollection<T>(collection: string): Promise<T[]> {
         const snapshot = await admin.firestore().collection(collection).get();
-        return snapshot.docs.map(doc => doc.data() as T);
+        return snapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }) as T);
     }
 }

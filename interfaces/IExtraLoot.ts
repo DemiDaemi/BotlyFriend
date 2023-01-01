@@ -1,4 +1,4 @@
 export interface IExtraLoot {
     player: string;
-    items: []
+    items: string[];
 }

@@ -4,7 +4,7 @@ import { client } from './bot'
 
 client.once(Events.ClientReady, (c: { user: { tag: any; }; }) => {
   console.log(`Ready! Logged in as ${c.user.tag}`);
-  client.user.setActivity(`Tinkering with stuff`);
+  client.user.setActivity(`Beep boop boop`);
 });
 
 client.on("guildCreate", (guild: { channels: { cache: any[]; }; }) => {

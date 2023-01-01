@@ -4,79 +4,37 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js";
-const admin = require("../firebase/Firebase");
 
-const initDate = new Date("2022-12-27");
-const weekCount = require("../helpers/weeks");
-const currentWeek = weekCount(initDate);
+import { ExtraLootFetcher } from "../firebase/ExtraLootFetcher";
+import { IExtraLoot } from "../interfaces/IExtraLoot";
+import { IExtraLootPage } from "../interfaces/IExtraLootPage";
 
-let pages = [currentWeek];
+import { currentWeek } from "../helpers/weeks";
+import { renderPage } from "../helpers/render";
+
+let pages: IExtraLootPage[];
+
 
 async function listWeeks() {
-  const snapshot = await admin.firestore().collection("ExtraLoot").get();
-  snapshot.forEach((doc: any, index: any) => {
-    let players = doc.data();
-
-    const loot = [] as any;
-
-    index = 0;
-    Object.entries(players).forEach(([player, items]) => {
-      loot.push({
-        player: player,
-        items: items,
-      });
-      index++;
-    });
-
-    pages.push({
-      weekNumber: doc.id,
-      loot: loot,
-    });
-  });
+  const extraLootFetcher = new ExtraLootFetcher();
+  pages = await extraLootFetcher.getAllExtraLoot();
 }
 
 function lootDisplayWeek(week: any) {
-  let title = `***${pages[week].weekNumber}***\n\n`;
+  let title = `\n***${pages[week].weekNumber}***\n`;
+  let items: string;
 
-  let items = "";
-  pages[week].loot.forEach((loot: any) => {
-    let sb = `**${loot.player}: **`;
-    loot.items.forEach((item: any, i: any) => {
-      sb += `${item}`;
-      if (i < loot.items.length - 1) sb += ", ";
-    });
-
-    items += `${sb} \n`;
-  });
+  items = renderPage(week, pages)
 
   return title + items;
+
+
 }
 
-async function currentWeekLoot() {
-  await listWeeks();
-
-  let items = "";
-  let loot = pages[currentWeek].loot;
-
-  loot.forEach((loot: any) => {
-    let sb = `**${loot.player}: **`;
-    loot.items.forEach((item: any, i: any) => {
-      sb += `${item}`;
-      if (i < loot.items.length - 1) sb += ", ";
-    });
-
-    items += `${sb} \n`;
-  });
-
-  return items;
-}
-
-let weekIndex = currentWeek;
-
-function getButtons() {
+function getButtons(weekIndex: number) {
   let row = new ActionRowBuilder().addComponents([
     new ButtonBuilder()
-      .setDisabled(weekIndex < 2)
+      .setDisabled(weekIndex < 1)
       .setCustomId("previousWeek")
       .setLabel("⬅️")
       .setStyle(ButtonStyle.Primary),
@@ -94,11 +52,12 @@ module.exports = {
     .setName("loot")
     .setDescription("Displays who received extra loot for the past weeks"),
   async execute(interaction: any) {
+    let weekIndex = currentWeek;
     await listWeeks();
 
     await interaction.reply({
-      content: lootDisplayWeek(weekIndex),
-      components: [getButtons()],
+      content: lootDisplayWeek(currentWeek),
+      components: [getButtons(weekIndex)],
     });
 
     const collector = interaction.channel.createMessageComponentCollector({
@@ -115,9 +74,8 @@ module.exports = {
       }
       await i.update({
         content: lootDisplayWeek(weekIndex),
-        components: [getButtons()],
+        components: [getButtons(weekIndex)],
       });
     });
   },
 };
-// currentWeekLoot;

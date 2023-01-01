@@ -16,6 +16,7 @@
     "firebase-admin": "^11.4.1"
   },
   "devDependencies": {
+    "@firebase/firestore": "^3.8.0",
     "@types/node": "^18.11.18",
     "copyfiles": "^2.4.1",
     "nodemon": "^2.0.20",
